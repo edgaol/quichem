@@ -1,2 +1,3 @@
 # quichem
-Chemichistry tools for quick resolution of problems.
+Chemistry tools for quick resolution of problems.
+
