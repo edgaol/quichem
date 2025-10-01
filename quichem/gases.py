@@ -156,25 +156,37 @@ def _h(
     """
     if not (t0 and t):
         if not p0:
-            return (p-n**2*a/v**2) * (v-n**b) / ((v0-n0*b0)) + n0**2*a0/v0**2
+            return (p+n**2*a/v**2) * (v-n*b) / ((v0-n0*b0)) - n0**2*a0/v0**2
         elif not p:
-            return (p0-n0**a0/v0**2) * (v0-n0**b0) / ((v-n*b)) + n**2*a/v**2
+            return (p0+n0**2*a0/v0**2) * (v0-n0*b0) / ((v-n*b)) - n**2*a/v**2
         elif not v0:
-            return p * v * t0 / (t * p0)
+            c = (p+n**2*a/v**2) * (v-n*b)
+            sol = solve(-n0.m**3*a0.m*b0.m*X**(-2) + n0.m**2*a0.m*X**(-1) + p0.m*X - p0.m*n0.m*b0.m -c.m)
+            units = p.units * v.units / p0.units
+            return Quantity(_parse_solution(sol), units)
         elif not v:
-            return p0 * v0 * t / (t0 * p)
+            c = (p0+n0**2*a0/v0**2) * (v0-n0*b0)
+            sol = solve(-n.m**3*a.m*b.m*X**(-2) + n.m**2*a.m*X**(-1) + p.m*X - p.m*n.m*b.m -c.m)
+            units = p0.units * v0.units / p.units
+            return Quantity(_parse_solution(sol), units)
     if not p0:
-        return (p-n**2*a/v**2) * (v-n**b) * t0 / ((v0-n0*b0)*t) + n0**2*a0/v0**2
+        return (p+n**2*a/v**2) * (v-n*b) * t0 / ((v0-n0*b0)*t) - n0**2*a0/v0**2
     elif not p:
-        return (p0-n0**a0/v0**2) * (v0-n0**b0) * t / ((v-n*b)*t0) + n**2*a/v**2
+        return (p0+n0**2*a0/v0**2) * (v0-n0*b0) * t / ((v-n*b)*t0) - n**2*a/v**2
     elif not v0:
-        return p * v * t0 / (t * p0)
+        c = (p+n**2*a/v**2) * (v-n*b) * t0 / t
+        sol = solve(-n0.m**3*a0.m*b0.m*X**(-2) + n0.m**2*a0.m*X**(-1) + p0.m*X - p0.m*n0.m*b0.m -c.m)
+        units = p.units * v.units * t0.units / t.units / p0.units
+        return Quantity(_parse_solution(sol), units)
     elif not v:
-        return p0 * v0 * t / (t0 * p)
+        c = (p0+n0**2*a0/v0**2) * (v0-n0*b0) * t / t0
+        sol = solve(-n.m**3*a.m*b.m*X**(-2) + n.m**2*a.m*X**(-1) + p.m*X - p.m*n.m*b.m -c.m)
+        units = p0.units * v0.units * t.units / t0.units / p.units
+        return Quantity(_parse_solution(sol), units)
     elif not t0:
-        return (p0-n0**2*a0/v0**2) * (v0-n0*b0) * t / ((p-n**2*a/v**2) * (v-n*b))
+        return (p0+n0**2*a0/v0**2) * (v0-n0*b0) * t / ((p+n**2*a/v**2) * (v-n*b))
     elif not t:
-        return (p-n**2*a/v**2) * (v-n*b) * t / ((p0-n0**2*a0/v0**2) * (v0-n0*b0))
+        return (p+n**2*a/v**2) * (v-n*b) * t0 / ((p0+n0**2*a0/v0**2) * (v0-n0*b0))
     else:
         raise ValueError("Something went wrong.")
 
